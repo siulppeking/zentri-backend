@@ -5,6 +5,7 @@ import com.example.dto.response.ListarCategoriaResponse;
 import com.example.port.FindAllCategoriaPort;
 import com.example.query.ListarCategoriaQuery;
 import com.example.usecase.FindAllCategoriaUseCase;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +20,7 @@ public class FindAllCategoriaUseCaseImpl implements FindAllCategoriaUseCase {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ListarCategoriaResponse> execute(ListarCategoriaQuery query) {
         return findAllCategoriaPort.findAll(query.getIdUsuario()).stream()
                 .map(categoria -> new ListarCategoriaResponse(

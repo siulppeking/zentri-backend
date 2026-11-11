@@ -28,7 +28,7 @@ public class RegisterRequest {
 
     @NotNull(message = "Password no puede ser null")
     @NotBlank(message = "Password no puede ser vacio")
-    @Size(min = 8, max = 100, message = "Password debe tener entre 8 y 100 caracteres")
+    @Size(min = 6, max = 20, message = "Password debe tener entre 6 y 20 caracteres")
     private String password;
 
 }

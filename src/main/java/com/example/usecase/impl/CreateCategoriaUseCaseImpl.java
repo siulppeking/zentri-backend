@@ -8,6 +8,7 @@ import com.example.iam.model.Usuario;
 import com.example.model.Categoria;
 import com.example.port.CreateCategoriaPort;
 import com.example.usecase.CreateCategoriaUseCase;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CreateCategoriaUseCaseImpl implements CreateCategoriaUseCase {
@@ -19,6 +20,7 @@ public class CreateCategoriaUseCaseImpl implements CreateCategoriaUseCase {
     }
 
     @Override
+    @Transactional
     public CreateCategoriaResponse execute(CreateCategoriaCommand command) {
         if (createCategoriaPort.existsByNombre(command.getNombre(), command.getIdUsuario())) {
             throw new BusinessRuleException("La categoria '" + command.getNombre() + "' ya se encuentra registrada");

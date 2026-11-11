@@ -6,6 +6,7 @@ import com.example.port.FindCategoriaByIdPort;
 import com.example.query.FindCategoriaQuery;
 import com.example.usecase.FindCategoriaByIdUseCase;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class FindCategoriaByIdUseCaseImpl implements FindCategoriaByIdUseCase {
@@ -17,6 +18,7 @@ public class FindCategoriaByIdUseCaseImpl implements FindCategoriaByIdUseCase {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public FindCategoriaByIdResponse execute(FindCategoriaQuery query) {
         return findCategoriaByIdPort.findById(
                 query.getIdCategoria(),

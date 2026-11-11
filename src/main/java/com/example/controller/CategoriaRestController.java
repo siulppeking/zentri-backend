@@ -1,8 +1,12 @@
 package com.example.controller;
 
+import com.example.command.ModifyCategoriaCommand;
+import com.example.command.RemoveCategoriaCommand;
+import com.example.dto.request.ModifyCategoriaRequest;
 import com.example.dto.response.FindCategoriaByIdResponse;
+import com.example.dto.response.ModifyCategoriaResponse;
 import com.example.query.FindCategoriaQuery;
-import com.example.usecase.FindCategoriaByIdUseCase;
+import com.example.usecase.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -13,8 +17,6 @@ import com.example.dto.response.CreateCategoriaResponse;
 import com.example.dto.response.ListarCategoriaResponse;
 import com.example.iam.model.Usuario;
 import com.example.query.ListarCategoriaQuery;
-import com.example.usecase.CreateCategoriaUseCase;
-import com.example.usecase.FindAllCategoriaUseCase;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -27,13 +29,19 @@ public class CategoriaRestController {
     private final FindAllCategoriaUseCase findAllCategoriaUseCase;
     private final CreateCategoriaUseCase createCategoriaUseCase;
     private final FindCategoriaByIdUseCase findCategoriaByIdUseCase;
+    private final ModifyCategoriaUseCase modifyCategoriaUseCase;
+    private final RemoveCategoriaUseCase removeCategoriaUseCase;
 
     public CategoriaRestController(FindAllCategoriaUseCase findAllCategoriaUseCase,
                                    CreateCategoriaUseCase createCategoriaUseCase,
-                                   FindCategoriaByIdUseCase findCategoriaByIdUseCase) {
+                                   FindCategoriaByIdUseCase findCategoriaByIdUseCase,
+                                   ModifyCategoriaUseCase modifyCategoriaUseCase,
+                                   RemoveCategoriaUseCase removeCategoriaUseCase) {
         this.findAllCategoriaUseCase = findAllCategoriaUseCase;
         this.createCategoriaUseCase = createCategoriaUseCase;
         this.findCategoriaByIdUseCase = findCategoriaByIdUseCase;
+        this.modifyCategoriaUseCase = modifyCategoriaUseCase;
+        this.removeCategoriaUseCase = removeCategoriaUseCase;
     }
 
     @GetMapping
@@ -70,6 +78,29 @@ public class CategoriaRestController {
         return ResponseEntity.ok(findCategoriaByIdUseCase.execute(query));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ModifyCategoriaResponse> update(@PathVariable Long id,
+                                                          @Valid @RequestBody ModifyCategoriaRequest request) {
+        Long idUsuario = getIdUsuarioFromSecurityContext();
+        ModifyCategoriaCommand command = new ModifyCategoriaCommand(
+                id,
+                idUsuario,
+                request.getNombre()
+        );
+        ModifyCategoriaResponse categoria = modifyCategoriaUseCase.execute(command);
+        return ResponseEntity.ok(categoria);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        Long idUsuario = getIdUsuarioFromSecurityContext();
+        RemoveCategoriaCommand command = new RemoveCategoriaCommand(
+                id,
+                idUsuario
+        );
+        removeCategoriaUseCase.execute(command);
+        return ResponseEntity.noContent().build();
+    }
 
     private Long getIdUsuarioFromSecurityContext() {
         return ((Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getIdUsuario();
