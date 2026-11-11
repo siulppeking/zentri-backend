@@ -21,7 +21,7 @@ public class CreateCategoriaUseCaseImpl implements CreateCategoriaUseCase {
     @Override
     public CreateCategoriaResponse execute(CreateCategoriaCommand command) {
         if (createCategoriaPort.existsByNombre(command.getNombre(), command.getIdUsuario())) {
-            throw new BusinessRuleException("La categoria '" + command.getNombre() + "' ya se encuentra registrada.");
+            throw new BusinessRuleException("La categoria '" + command.getNombre() + "' ya se encuentra registrada");
         }
         Categoria categoriaToSave = new Categoria();
         categoriaToSave.setNombre(command.getNombre());
