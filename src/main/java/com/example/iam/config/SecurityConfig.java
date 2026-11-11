@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
 public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
@@ -66,7 +65,6 @@ public class SecurityConfig {
                             response.getWriter().write("{\"message\":\"Unauthorized: missing or invalid token\",\"status\":401}");
                         })
                         .accessDeniedHandler((request, response, accessDeniedException) -> {
-                            System.out.println("Access denied: " + accessDeniedException.getMessage());
                             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                             response.setContentType("application/json");
                             response.setCharacterEncoding("UTF-8");
@@ -76,6 +74,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints - NO authentication required
                         .antMatchers(HttpMethod.POST, "/login", "/register").permitAll()
+                        .antMatchers("/api/categorias/**", "/api/movimientos/**").hasRole("USER")
+                        .antMatchers("/api/configuracion/**").hasRole("ADMIN")
                         //.requestMatchers("/public/**").permitAll()
                         // Swagger/OpenAPI - NO authentication required
                         //.antMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()

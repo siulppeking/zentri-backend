@@ -4,7 +4,6 @@ import com.example.dto.response.FindCategoriaByIdResponse;
 import com.example.query.FindCategoriaQuery;
 import com.example.usecase.FindCategoriaByIdUseCase;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -38,7 +37,6 @@ public class CategoriaRestController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<ListarCategoriaResponse>> get() {
         Long idUsuario = getIdUsuarioFromSecurityContext();
         ListarCategoriaQuery query = new ListarCategoriaQuery(
@@ -48,7 +46,6 @@ public class CategoriaRestController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<CreateCategoriaResponse> create(@Valid @RequestBody CreateCategoriaRequest request) {
         Long idUsuario = getIdUsuarioFromSecurityContext();
         CreateCategoriaCommand command = new CreateCategoriaCommand(
@@ -64,7 +61,6 @@ public class CategoriaRestController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<FindCategoriaByIdResponse> findById(@PathVariable Long id) {
         Long idUsuario = getIdUsuarioFromSecurityContext();
         FindCategoriaQuery query = new FindCategoriaQuery(
